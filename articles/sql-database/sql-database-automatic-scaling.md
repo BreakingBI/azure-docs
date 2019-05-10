@@ -28,7 +28,7 @@ We first need to create an Azure SQL Database using the S1 pricing tier with the
 
     ![S1 Pricing Tier](media/sql-database-automatic-scaling/create-database-1.jpg)
 
-1. On the Additional Settings Tab of the SQL Database Creation Wizard, select the Sample data option.
+2. On the Additional Settings Tab of the SQL Database Creation Wizard, select the Sample data option.
 
     ![Sample Database](media/sql-database-automatic-scaling/create-database-2.jpg)
 
@@ -43,26 +43,26 @@ Before we leave Azure Active Directory, we need to copy the following fields:
 * Application Secret
 
 1. Navigate to the newly registered App in the Acure Portal
-1. Copy the Application (Client) ID and Directory (Tenant) ID from the Overview blade.
+2. Copy the Application (Client) ID and Directory (Tenant) ID from the Overview blade.
 
     ![Registered App IDs Step 1](media/sql-database-automatic-scaling/active-directory-app-1.jpg)
 
-1. Navigate to the Certificates & Secrets blade.  Create a New Client Secret.
+3. Navigate to the Certificates & Secrets blade.  Create a New Client Secret.
 
     ![Registered App IDs Step 2](media/sql-database-automatic-scaling/active-directory-app-2.jpg)
 
 # Add the Registered App to the Contributor Role for the Azure SQL Server
 
 1. Navigate to the newly created Azure SQL Server in the Azure Portal.
-1. Select the Access Control (IAM) Tab from the left Navigation Pane.
+2. Select the Access Control (IAM) Tab from the left Navigation Pane.
 
     ![SQL Server](media/sql-database-automatic-scaling/sql-server-1.jpg)
 
-1. Add the newly registered app, i.e. service principal, to the Contribution role.
+3. Add the newly registered app, i.e. service principal, to the Contribution role.
 
     ![SQL Server Access Control Step 1](media/sql-database-automatic-scaling/sql-server-iam-1.jpg)
 
-1. Selecting the registered app in the filtered list will move it to the bottom pane, allowing you to save the role assignment.
+4. Selecting the registered app in the filtered list will move it to the bottom pane, allowing you to save the role assignment.
 
     ![SQL Server Access Control Step 2](media/sql-database-automatic-scaling/sql-server-iam-2.jpg)
 
@@ -75,31 +75,31 @@ Now, we need to create an Azure Automation Runbook.  For a primer on creating yo
 Before we can execute our code, we need to add the appropriate modules to our Azure Automation account.  For more information on Azure Automation modules, see [Manage Modules in Azure Automation](../automation/shared-resources/modules.md)
 
 1. Navigate to the newly created Azure Automation Account in the Azure Portal.
-1. Select the Modules Tab from the left Navigation Pane.
+2. Select the Modules Tab from the left Navigation Pane.
 
     ![Automation Modules Step 1](media/sql-database-automatic-scaling/automation-modules-1.jpg)
 
-1. Select the Browse Gallery Option from the top Navigation Menu.
+3. Select the Browse Gallery Option from the top Navigation Menu.
 
     ![Automation Modules Step 2](media/sql-database-automatic-scaling/automation-modules-2.jpg)
 
-1. Search for the Az.Accounts module and select it from the list.
+4. Search for the Az.Accounts module and select it from the list.
 
     ![Automation Modules Browse Gallery](media/sql-database-automatic-scaling/automation-modules-browse-gallery-1.jpg)
 
-1. Select the Import option for the Import Module blade.
+5. Select the Import option for the Import Module blade.
 
     ![Automation Modules Import](media/sql-database-automatic-scaling/automation-modules-import-1.jpg)
 
-1. Select Ok from the Confirmation blade.
+6. Select Ok from the Confirmation blade.
 
     ![Automation Modules Import](media/sql-database-automatic-scaling/automation-modules-import-2.jpg)
 
-1. The Module blade will automatically open.  Wait for the Import process to complete.  Once complete, the module will look like this:
+7. The Module blade will automatically open.  Wait for the Import process to complete.  Once complete, the module will look like this:
 
     ![Automation Modules Import](media/sql-database-automatic-scaling/automation-modules-import-3.jpg)
 
-1. Repeat this process for the Az.Sql module.
+8. Repeat this process for the Az.Sql module.
 
 # Create Azure Automation Credentials for the Registered App
 
@@ -109,19 +109,19 @@ Next, we need to create Azure Automation Credentials for the newly registered ap
 > Azure Automation Credentials are backed by Azure Key Vault.  It is always recommended to securely store all credentials and access tokens.
 
 1. Navigate to the Azure Automation Account in the Azure Portal.
-1. Select the Credentials Tab from the left Navigation Pane.
+2. Select the Credentials Tab from the left Navigation Pane.
 
     ![Automation Credentials Step 1](media/sql-database-automatic-scaling/automation-credentials-1.jpg)
 
-1. Select the Add a Credential Option from the top Navigation Menu.
+3. Select the Add a Credential Option from the top Navigation Menu.
 
     ![Automation Credentials Step 2](media/sql-database-automatic-scaling/automation-credentials-2.jpg)
 
-1. Use the Following Values for the New Credential and Select the Create Button:
+4. Use the Following Values for the New Credential and Select the Create Button:
 
-* Name: The Name of the Registered App
-* User Name: The Application (Client) ID of the Registered App
-* Password: The Client Secret of the Registered App
+* **Name**: The Name of the Registered App
+* **User Name**: The Application (Client) ID of the Registered App
+* **Password**: The Client Secret of the Registered App
 
     ![Automation Credentials Step 2](media/sql-database-automatic-scaling/automation-credentials-3.jpg)
 
@@ -285,9 +285,9 @@ After the job completes, you can see that the Azure SQL Database has been scaled
 Next, we need to trigger the Azure Automation Runbook based on Usage Metrics for the Azure SQL Database.
 
 1. Scale the Azure SQL Database back to the S1 service level.
-1. Import the Az.Monitor Module from the Gallery using the same technique described earlier.
-1. Create another Azure Automation Powershell Runbook called MonitorSQLDB using the same Azure Automation Account.
-1. Use the following snippet for the Runbook:
+2. Import the Az.Monitor Module from the Gallery using the same technique described earlier.
+3. Create another Azure Automation Powershell Runbook called MonitorSQLDB using the same Azure Automation Account.
+4. Use the following snippet for the Runbook:
 
 ###
 
@@ -564,11 +564,11 @@ The MonitorSQLDB Runbook can also be scheduled using Azure Logic Apps.  Azure Lo
 
     ![Logic Apps](media/sql-database-automatic-scaling/logic-apps-1.jpg)
 
-1. Using the Logic Apps Designer, add a [Schedule - Recurrence](../connectors/connectors-native-recurrence.md) trigger with a ten minute interval.
+2. Using the Logic Apps Designer, add a [Schedule - Recurrence](../connectors/connectors-native-recurrence.md) trigger with a ten minute interval.
 
     ![Logic Apps](media/sql-database-automatic-scaling/logic-apps-recurrence-1.jpg)
 
-1. Using the Logic Apps Designer, add an Azure Automation - Create Job action with the following parameters:
+3. Using the Logic Apps Designer, add an Azure Automation - Create Job action with the following parameters:
 
     ![Logic Apps](media/sql-database-automatic-scaling/logic-apps-create-job-1.jpg)
 
@@ -591,7 +591,7 @@ The MonitorSQLDB Runbook can also be scheduled using Azure Logic Apps.  Azure Lo
 * **Runbook Parameter ScaleUpThreshold**: Empty
 * **Runbook Parameter ScaleDownThreshold**: Empty
 
-1. Save the Azure Logic App.
+4. Save the Azure Logic App.
 
 The Azure Logic App should now run every 10 minutes, automatically scaling the Azure SQL Database according to the parameters laid out.  You can test it by running the Load Simulation script from earlier.
 
@@ -605,9 +605,9 @@ The Azure Automation Runbook can also be triggered by Azure Classic Metric Alert
 > Unified Azure Metric Alerts will be able to directly create Azure Automation Jobs.  Once this functionality is released for Azure SQL Database, see [Use the Voluntary Migration Tool to Migrate your Classic Alert Rules](../azure-monitor/platform/alerts-using-migration-tool.md) for migration information.
 
 1. Create an Azure Logic App name sqlautoscalealertla.
-1. Add an [HTTP Request](../connectors/connectors-native-http.md) trigger to the Azure Logic App.
+2. Add an [HTTP Request](../connectors/connectors-native-http.md) trigger to the Azure Logic App.
     * This trigger will not actually be used, but is available for external calls as well.
-1. Using the Logic Apps Designer, add an Azure Automation - Create Job action with the following parameters:
+3. Using the Logic Apps Designer, add an Azure Automation - Create Job action with the following parameters:
 
     ![Logic Apps](media/sql-database-automatic-scaling/logic-apps-2.jpg)
 
@@ -625,8 +625,8 @@ The Azure Automation Runbook can also be triggered by Azure Classic Metric Alert
 * **Runbook Parameter MinimumServiceLevel**: Empty
 * **Runbook Parameter MaximumServiceLevel**: Empty
 
-1. Save the Azure Logic App.
-1. Create an Azure Classic Alert for the Azure SQL Database using the following parameters:
+4. Save the Azure Logic App.
+5. Create an Azure Classic Alert for the Azure SQL Database using the following parameters:
 
     ![Logic Apps](media/sql-database-automatic-scaling/sql-database-alert-1.jpg)
 
@@ -641,7 +641,7 @@ The Azure Automation Runbook can also be triggered by Azure Classic Metric Alert
 * **Period**: Over the Last 10 Minutes
 * **Take Action**: sqldbautoscalealertla
 
-1. Click Ok.
+6. Click Ok.
 
 # Next Steps
 
