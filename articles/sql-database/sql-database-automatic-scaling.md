@@ -3,14 +3,14 @@ title: Set up Automatic Scaling for Azure SQL DB | Microsoft Docs
 description: This tutorial shows you how to set up Automatic Scaling for Azure SQL DB
 services: sql-database, automation, 
 ms.service: sql-database
-ms.subservice: ???
+ms.subservice: performance
 ms.custom: FastTrack-new
 ms.devlang: 
-ms.topic: ???
-author: willewel
-ms.author: ???
-ms.reviewer: ???
-manager: ???
+ms.topic: conceptual
+author: BreakingBI
+ms.author: willewel
+ms.reviewer: joluedem
+manager: donnana
 ms.date: 05/09/2019
 ---
 # Tutorial: Set up Automatic Scaling for Azure SQL Database
@@ -32,7 +32,7 @@ We first need to create an Azure SQL Database using the S1 pricing tier with the
 
     ![Sample Database](media/sql-database-automatic-scaling/create-database-2.jpg)
 
-# Create an Registered App in Azure Active Directory
+# Create a Registered App in Azure Active Directory
 
 Next, we need to register an app, commonly known as a Service Principal.  For a primer on creating your first Azure SQL Database, see [Quickstart: Register an application with the Microsoft identity platform](../active-directory/develop/quickstart-register-app.md).
 
@@ -42,7 +42,7 @@ Before we leave Azure Active Directory, we need to copy the following fields:
 * Directory (Tenant) ID
 * Application Secret
 
-1. Navigate to the newly registered App in the Acure Portal
+1. Navigate to the newly registered App in the Azure Portal
 2. Copy the Application (Client) ID and Directory (Tenant) ID from the Overview blade.
 
     ![Registered App IDs Step 1](media/sql-database-automatic-scaling/active-directory-app-1.jpg)
@@ -58,7 +58,7 @@ Before we leave Azure Active Directory, we need to copy the following fields:
 
     ![SQL Server](media/sql-database-automatic-scaling/sql-server-1.jpg)
 
-3. Add the newly registered app, i.e. service principal, to the Contribution role.
+3. Add the newly registered app, i.e. service principal, to the Contributor role.
 
     ![SQL Server Access Control Step 1](media/sql-database-automatic-scaling/sql-server-iam-1.jpg)
 
@@ -284,7 +284,7 @@ After the job completes, you can see that the Azure SQL Database has been scaled
 
 Next, we need to trigger the Azure Automation Runbook based on Usage Metrics for the Azure SQL Database.
 
-1. Scale the Azure SQL Database back to the S1 service level.
+1. Before we being, manually scale the Azure SQL Database back to the S1 service level using the Azure portal.
 2. Import the Az.Monitor Module from the Gallery using the same technique described earlier.
 3. Create another Azure Automation Powershell Runbook called MonitorSQLDB using the same Azure Automation Account.
 4. Use the following snippet for the Runbook:
@@ -600,7 +600,7 @@ The Azure Logic App should now run every 10 minutes, automatically scaling the A
 The Azure Automation Runbook can also be triggered by Azure Classic Metric Alerts.  The previous methods mentioned were triggered on a schedule.  Azure Classic Metric Alerts will allow us to trigger the scaling based on events.  In other words, instead of checking the metrics every ten minutes, we can have the Azure Automation Runbook trigger only when the DTU percentage passes one of the thresholds.  For a primer on creating your first Azure Classic Metric Alert, see [Create, View, and Manage Classic Metric Alerts using Azure Monitor](../azure-monitor/platform/alerts-classic-portal.md).
 
 > [!IMPORTANT]
-> Azure Classic Metric Alerts do not support directly create Azure Automation Jobs.  They must be created indirectly via Azure Logic Apps, which can be executed by Azure Class Metric Alerts.
+> Azure Classic Metric Alerts do not support directly creating Azure Automation Jobs.  They must be created indirectly via Azure Logic Apps, which can be executed by Azure Class Metric Alerts.
 >
 > Unified Azure Metric Alerts will be able to directly create Azure Automation Jobs.  Once this functionality is released for Azure SQL Database, see [Use the Voluntary Migration Tool to Migrate your Classic Alert Rules](../azure-monitor/platform/alerts-using-migration-tool.md) for migration information.
 
